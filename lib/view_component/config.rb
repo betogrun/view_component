@@ -26,7 +26,7 @@ module ViewComponent
           test_controller: "ApplicationController",
           default_preview_layout: nil,
           capture_compatibility_patch_enabled: false,
-          strict_helpers_enabled: false
+          helpers_enabled: true
         })
       end
 
@@ -155,10 +155,10 @@ module ViewComponent
       # previews.
       # Defaults to `false`.
 
-      # @!attribute strict_helpers_enabled
+      # @!attribute helpers_enabled
       # @return [Boolean]
-      # Enables the experimental strict helpers mode wich throws ViewComponent::StrictHelperError when helpers is used
-      # Defaults to `false`.
+      # Enables the use of #helpers
+      # Defaults to `True`.
 
       def default_preview_paths
         return [] unless defined?(Rails.root) && Dir.exist?("#{Rails.root}/test/components/previews")
