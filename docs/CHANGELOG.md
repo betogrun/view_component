@@ -14,6 +14,24 @@ nav_order: 5
 
     *Reegan Viljoen*
 
+## 3.11.0
+
+* Fix running non-integration tests under Rails main.
+
+    *Cameron Dutro*
+
+* Better name and link for Avo.
+
+    *Adrian Marin*
+
+* Document using rack-mini-profiler with ViewComponent.
+
+    *Thomas Carr*
+
+* Move dependencies to gemspec.
+
+    *Joel Hawksley*
+
 * Include ViewComponent::UseHelpers by default.
 
       *Reegan Viljoen*
