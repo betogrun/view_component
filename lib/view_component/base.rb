@@ -35,6 +35,8 @@ module ViewComponent
 
     RESERVED_PARAMETER = :content
 
+    use_helpers :form_authenticity_token, :protect_against_forgery?, :config, :content_security_policy_nonce
+
     # For CSRF authenticity tokens in forms and Content Security Policy nonces
 
     # Config option that strips trailing whitespace in templates before compiling them.
@@ -66,19 +68,7 @@ module ViewComponent
     # @return [String]
     def render_in(view_context, &block)
       self.class.compile(raise_errors: true)
-      if ViewComponent::Base.config.strict_helpers_enabled
-        class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
-          use_helpers :form_authenticity_token, :protect_against_forgery?, :config, :content_security_policy_nonce
-        RUBY
-      else
-        class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
-          # For CSRF authenticity tokens in forms
-          delegate :form_authenticity_token, :protect_against_forgery?, :config, to: :helpers
 
-          # For Content Security Policy nonces
-          delegate :content_security_policy_nonce, to: :helpers
-        RUBY
-      end
       @view_context = view_context
       self.__vc_original_view_context ||= view_context
 
