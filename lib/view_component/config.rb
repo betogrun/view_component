@@ -11,7 +11,7 @@ module ViewComponent
       alias_method :default, :new
 
       def defaults
-        ActiveSupport::OrderedOptions.new.merge!({
+        ActiveSupport::InheritableOptions.new({
           generate: default_generate_options,
           preview_controller: "ViewComponentsController",
           preview_route: "/rails/view_components",
@@ -26,7 +26,8 @@ module ViewComponent
           test_controller: "ApplicationController",
           default_preview_layout: nil,
           capture_compatibility_patch_enabled: false,
-          helpers_enabled: true
+          helpers_enabled: true,
+          strict_helpers_enabled?: false
         })
       end
 

@@ -6,7 +6,7 @@ require "view_component/deprecation"
 
 module ViewComponent
   class Engine < Rails::Engine # :nodoc:
-    config.view_component = ViewComponent::Config.current
+    config.view_component = ViewComponent::Config.defaults
 
     rake_tasks do
       load "view_component/rails/tasks/view_component.rake"

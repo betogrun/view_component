@@ -43,16 +43,6 @@ module ViewComponent
     class_attribute :__vc_strip_trailing_whitespace, instance_accessor: false, instance_predicate: false
     self.__vc_strip_trailing_whitespace = false # class_attribute:default doesn't work until Rails 5.2
 
-    # Default for class
-    class_attribute :__vc_strict_helpers_enabled, instance_accessor: false, instance_predicate: false, default: false
-    # Changeable for instance
-    attr_writer :__vc_strict_helpers_enabled
-
-    def __vc_strict_helpers_enabled
-      @__vc_strict_helpers_enabled.nil? ? self.class.__vc_strict_helpers_enabled : @__vc_strict_helpers_enabled
-    end
-    alias_method :strict_helpers_enabled?, :__vc_strict_helpers_enabled
-
     attr_accessor :__vc_original_view_context
 
     # Components render in their own view context. Helpers and other functionality
@@ -529,9 +519,16 @@ module ViewComponent
         # `compile` defines
         compile
 
-        # Set strict_helpers_enabled from global config
+        child.include ActiveSupport::Configurable
+
         if child.superclass == ViewComponent::Base
-          child.__vc_strict_helpers_enabled = Rails.application.config.view_component.strict_helpers_enabled
+          child.define_singleton_method(:config) do
+            @@config ||= Rails.application.config.view_component.inheritable_copy
+          end
+        else
+          child.define_singleton_method(:config) do
+            @@config ||= superclass.config.inheritable_copy
+          end
         end
 
         # Give the child its own personal #render_template_for to protect against the case when
@@ -653,15 +650,6 @@ module ViewComponent
       # @return [Boolean]
       def strip_trailing_whitespace?
         __vc_strip_trailing_whitespace
-      end
-
-      # TODO
-      def strict_helpers_enabled=(value = true)
-        self.__vc_strict_helpers_enabled = value
-      end
-
-      def strict_helpers_enabled?
-        __vc_strict_helpers_enabled
       end
 
       # Ensure the component initializer accepts the
